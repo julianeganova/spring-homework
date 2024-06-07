@@ -7,6 +7,7 @@ import com.bed.budget.mapper.LinkMapper;
 import com.bed.budget.model.Expense;
 import com.bed.budget.model.FamilyBudget;
 import com.bed.budget.model.MonthsBudget;
+import com.bed.budget.repository.BudgetRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import org.springframework.stereotype.Service;
@@ -19,8 +20,9 @@ import java.util.*;
 public class BudgetService {
 
     private final LinkMapper linkMapper;
+    private final BudgetRepository budgetRepository;
     public static final String SUCCESS_RESPONSE = "Успешно";
-    private final List<FamilyBudget> budgets = new ArrayList<>();
+
     private int activeBudgetIndex = -1;
     //todo: добавить информацию о доходах в бюджет, создание и хранение типов расходов, скопировать бюджет (план)
     @SneakyThrows
@@ -31,42 +33,26 @@ public class BudgetService {
         return monthOfBudget;
     }
 
-    private FamilyBudget getCurrentBudget() {
-        if (activeBudgetIndex == -1) {
-            throw new NoCurrentBudgetException("Не выбран аккаунт для ведения бюджета");
-        }
-        return budgets.get(activeBudgetIndex);
-    }
-
     public NewFamilyBudgetResponse createFamilyBudget(NewFamilyBudgetRequest request) {
         FamilyBudget familyBudget = new FamilyBudget(request.getName());
-        budgets.add(familyBudget);
-        activeBudgetIndex = budgets.indexOf(familyBudget);
-        return linkMapper.linkToNewFamilyBudgetResponse(SUCCESS_RESPONSE, budgets.indexOf(familyBudget));
+        int budgetIndex = budgetRepository.save(familyBudget);
+        return linkMapper.linkToNewFamilyBudgetResponse(SUCCESS_RESPONSE, budgetIndex);
     }
+
     public FamilyBudgetListResponse getList() {
-        List<String> responseList = new ArrayList<>();
-        for (FamilyBudget budget : budgets) {
-            responseList.add(budget.getName());
-        }
-        return linkMapper.linkToFamilyBudgetListResponse(responseList);
+        return linkMapper.linkToFamilyBudgetListResponse(budgetRepository.getAllNames());
     }
 
     public CreateMonthsBudgetResponse createMonthsBudget(CreateMonthsBudgetRequest request) {
-        FamilyBudget currentBudget = getCurrentBudget();
-        Map<Date, MonthsBudget> monthsBudgets = new HashMap();
+        FamilyBudget currentBudget = budgetRepository.getCurrentBudget();
         Date monthOfBudget = getDateFromMonth(request.getMonth());
-        if (currentBudget.getMonthsBudgetList().containsKey(monthOfBudget)) {
-            throw new BudgetAlreadyExistsException("Бюджет на месяц уже открыт");
-        }
-        currentBudget.getPlanMonthsBudgetList().put(monthOfBudget, new MonthsBudget(MonthsBudget.PLAN));
-        currentBudget.getMonthsBudgetList().put(monthOfBudget, new MonthsBudget(MonthsBudget.FACT));
+        budgetRepository.createNewMonthsBudget(currentBudget, monthOfBudget);
         return linkMapper.linkToCreateMonthsBudgetResponse(SUCCESS_RESPONSE);
     }
 
     public MonthlyBudgetReportResponse monthlyBudgetReport(String month) {
         Date monthOfBudget = getDateFromMonth(month);
-        FamilyBudget currentBudget = getCurrentBudget();
+        FamilyBudget currentBudget = budgetRepository.getCurrentBudget();
         Set<String> expenseTypes = currentBudget.getExpenseTypes();
         List<String> report = new ArrayList<>();
         for (String type : expenseTypes) {
@@ -89,25 +75,15 @@ public class BudgetService {
         return linkMapper.linkToMonthlyBudgetReportResponse(report);
     }
     public AddExpenseResponse addExpense (AddExpenseRequest request) {
-        FamilyBudget currentBudget = getCurrentBudget();
+        FamilyBudget currentBudget = budgetRepository.getCurrentBudget();
         String expenseType = request.getType(); //todo отдельно заводить типы расходов и тут проверять тип
-        if (!currentBudget.getExpenseTypes().contains((expenseType))) {
-            currentBudget.getExpenseTypes().add(expenseType);
+        if (!currentBudget.getExpenseTypes().contains(expenseType)) {
+            budgetRepository.addExpenseType(currentBudget, expenseType);
         }
-        if (currentBudget.getExpenseTypes().contains(expenseType)) {
-            double sumExpense = request.getSum();
-            String comment = request.getComment();
-            Date dateExpense = request.getDate();
-            Expense expense = new Expense(expenseType, sumExpense, dateExpense, comment);
-            Date monthOfBudget = getDateFromMonth(request.getMonth());
-            MonthsBudget budget;
-            if (request.getBudgetType() == MonthsBudget.PLAN) {
-                budget = currentBudget.getPlanMonthsBudgetList().get(monthOfBudget);
-            } else {
-                budget = currentBudget.getMonthsBudgetList().get(monthOfBudget);
-            }
-            budget.getExpenses().add(expense);
-        }
+        Date monthOfBudget = getDateFromMonth(request.getMonth());
+        Expense expense = new Expense(expenseType, request.getSum(), request.getDate(), request.getComment());
+
+        budgetRepository.addExpense(currentBudget, expense, monthOfBudget, request.getBudgetType());
         return linkMapper.linkToAddExpenseResponse(SUCCESS_RESPONSE);
     }
 
