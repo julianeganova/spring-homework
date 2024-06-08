@@ -12,17 +12,17 @@ import org.springframework.web.bind.annotation.*;
 public class BudgetController {
     private final BudgetService budgetService;
 
-    @PostMapping("newFamily")
+    @PostMapping("new-family")
     public NewFamilyBudgetResponse createFamilyBudget(@RequestBody NewFamilyBudgetRequest request) {
         return budgetService.createFamilyBudget(request);
     }
 
-    @GetMapping("getFamilies")
+    @GetMapping("get-families")
     public FamilyBudgetListResponse getFamilies() {
         return budgetService.getList();
     }
 
-    @PostMapping("newMonthsBudget")
+    @PostMapping("new-months-budget")
     public CreateMonthsBudgetResponse createMonthsBudget(@RequestBody CreateMonthsBudgetRequest request) {
         return budgetService.createMonthsBudget(request);
     }
@@ -32,7 +32,7 @@ public class BudgetController {
         return budgetService.monthlyBudgetReport(month);
     }
 
-    @PostMapping("addExpense")
+    @PostMapping("add-expense")
     public AddExpenseResponse addExpense(@RequestBody AddExpenseRequest request) {
         return budgetService.addExpense(request);
     }

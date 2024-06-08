@@ -1,9 +1,7 @@
 package com.bed.budget.service;
 
 import com.bed.budget.dto.*;
-import com.bed.budget.exception.BudgetAlreadyExistsException;
-import com.bed.budget.exception.NoCurrentBudgetException;
-import com.bed.budget.mapper.LinkMapper;
+import com.bed.budget.mapper.BudgetMapper;
 import com.bed.budget.model.Expense;
 import com.bed.budget.model.FamilyBudget;
 import com.bed.budget.model.MonthsBudget;
@@ -19,7 +17,7 @@ import java.util.*;
 @RequiredArgsConstructor
 public class BudgetService {
 
-    private final LinkMapper linkMapper;
+    private final BudgetMapper budgetMapper;
     private final BudgetRepository budgetRepository;
     public static final String SUCCESS_RESPONSE = "Успешно";
 
@@ -36,18 +34,18 @@ public class BudgetService {
     public NewFamilyBudgetResponse createFamilyBudget(NewFamilyBudgetRequest request) {
         FamilyBudget familyBudget = new FamilyBudget(request.getName());
         int budgetIndex = budgetRepository.save(familyBudget);
-        return linkMapper.linkToNewFamilyBudgetResponse(SUCCESS_RESPONSE, budgetIndex);
+        return budgetMapper.linkToNewFamilyBudgetResponse(SUCCESS_RESPONSE, budgetIndex);
     }
 
     public FamilyBudgetListResponse getList() {
-        return linkMapper.linkToFamilyBudgetListResponse(budgetRepository.getAllNames());
+        return budgetMapper.linkToFamilyBudgetListResponse(budgetRepository.getAllNames());
     }
 
     public CreateMonthsBudgetResponse createMonthsBudget(CreateMonthsBudgetRequest request) {
         FamilyBudget currentBudget = budgetRepository.getCurrentBudget();
         Date monthOfBudget = getDateFromMonth(request.getMonth());
         budgetRepository.createNewMonthsBudget(currentBudget, monthOfBudget);
-        return linkMapper.linkToCreateMonthsBudgetResponse(SUCCESS_RESPONSE);
+        return budgetMapper.linkToCreateMonthsBudgetResponse(SUCCESS_RESPONSE);
     }
 
     public MonthlyBudgetReportResponse monthlyBudgetReport(String month) {
@@ -72,7 +70,7 @@ public class BudgetService {
             }
             report.add(String.format("%s: план %s, факт %s", type, sumPlan, sumFact));
         }
-        return linkMapper.linkToMonthlyBudgetReportResponse(report);
+        return budgetMapper.linkToMonthlyBudgetReportResponse(report);
     }
     public AddExpenseResponse addExpense (AddExpenseRequest request) {
         FamilyBudget currentBudget = budgetRepository.getCurrentBudget();
@@ -84,7 +82,7 @@ public class BudgetService {
         Expense expense = new Expense(expenseType, request.getSum(), request.getDate(), request.getComment());
 
         budgetRepository.addExpense(currentBudget, expense, monthOfBudget, request.getBudgetType());
-        return linkMapper.linkToAddExpenseResponse(SUCCESS_RESPONSE);
+        return budgetMapper.linkToAddExpenseResponse(SUCCESS_RESPONSE);
     }
 
 }

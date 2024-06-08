@@ -1,15 +1,13 @@
 package com.bed.budget.service;
 
-import com.bed.budget.dto.FamilyBudgetListResponse;
 import com.bed.budget.dto.MonthlyBudgetReportResponse;
 import com.bed.budget.dto.NewFamilyBudgetRequest;
 import com.bed.budget.dto.NewFamilyBudgetResponse;
-import com.bed.budget.mapper.LinkMapper;
+import com.bed.budget.mapper.BudgetMapper;
 import com.bed.budget.model.Expense;
 import com.bed.budget.model.FamilyBudget;
 import com.bed.budget.model.MonthsBudget;
 import com.bed.budget.repository.BudgetRepository;
-import com.bed.budget.service.BudgetService;
 import lombok.SneakyThrows;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -19,7 +17,6 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import java.text.SimpleDateFormat;
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -31,7 +28,7 @@ import static org.mockito.Mockito.*;
 @ExtendWith(SpringExtension.class)
 @ContextConfiguration(classes = {
         BudgetService.class,
-        LinkMapper.class
+        BudgetMapper.class
 })
 class BudgetServiceTest {
     @Autowired

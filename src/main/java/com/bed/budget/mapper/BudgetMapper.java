@@ -2,9 +2,6 @@ package com.bed.budget.mapper;
 
 import com.bed.budget.dto.*;
 import lombok.NoArgsConstructor;
-import lombok.RequiredArgsConstructor;
-import org.mapstruct.Mapper;
-import org.mapstruct.ReportingPolicy;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -12,7 +9,7 @@ import java.util.List;
 //@Mapper(componentModel = "spring", unmappedTargetPolicy = ReportingPolicy.ERROR)
 @Component
 @NoArgsConstructor
-public class LinkMapper {
+public class BudgetMapper {
     public NewFamilyBudgetResponse linkToNewFamilyBudgetResponse(String response, int id) {
         NewFamilyBudgetResponse result = new NewFamilyBudgetResponse();
         result.setResponse(response);

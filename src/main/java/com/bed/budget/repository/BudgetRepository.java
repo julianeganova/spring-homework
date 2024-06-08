@@ -14,7 +14,6 @@ import java.util.Date;
 import java.util.List;
 
 @Repository
-@RequiredArgsConstructor
 public class BudgetRepository {
     private final List<FamilyBudget> budgets = new ArrayList<>();
     private int activeBudgetIndex = -1;
