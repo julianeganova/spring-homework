@@ -3,6 +3,6 @@ package com.bed.budget.dto;
 import lombok.Data;
 
 @Data
-public class NewFamilyBudgetRequest {
+public class NewUserRequest {
     private String name;
 }
