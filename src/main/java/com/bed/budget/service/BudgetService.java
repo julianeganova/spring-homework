@@ -23,7 +23,7 @@ public class BudgetService {
     public static final String SUCCESS_RESPONSE = "Успешно";
 
     private int activeBudgetIndex = -1;
-    //todo: добавить информацию о доходах в бюджет, создание и хранение типов расходов, скопировать бюджет (план)
+    //todo: добавить информацию о доходах в бюджет, CRUD типов расходов, скопировать бюджет (план)
     @SneakyThrows
     private Date getDateFromMonth(String month) {
         SimpleDateFormat dateFormat = new SimpleDateFormat();
@@ -64,10 +64,7 @@ public class BudgetService {
             double sumFact = 0;
             MonthsBudget planBudget = budgetRepository.getBudget(currentUser, monthOfBudget, MonthsBudget.PLAN);
             for (Expense expense : budgetRepository.getExpenses(planBudget)) {
-                System.out.println(expense.getExpenseType());
-                System.out.println(type);
                 if (expense.getExpenseType().equals(type)) {
-                    System.out.println("ura");
                     sumPlan += expense.getSum();
                 }
             }
