@@ -10,8 +10,8 @@ import java.util.List;
 @Component
 @NoArgsConstructor
 public class BudgetMapper {
-    public NewFamilyBudgetResponse linkToNewFamilyBudgetResponse(String response, int id) {
-        NewFamilyBudgetResponse result = new NewFamilyBudgetResponse();
+    public NewUserResponse linkToNewFamilyBudgetResponse(String response, int id) {
+        NewUserResponse result = new NewUserResponse();
         result.setResponse(response);
         result.setId(id);
         return result;
@@ -27,9 +27,9 @@ public class BudgetMapper {
         return response;
     };
 
-    public FamilyBudgetListResponse linkToFamilyBudgetListResponse(List<String> response) {
+    public UserListResponse linkToFamilyBudgetListResponse(List<String> response) {
         List<String> result = response;
-        return new FamilyBudgetListResponse(result);
+        return new UserListResponse(result);
     }
 
     public MonthlyBudgetReportResponse linkToMonthlyBudgetReportResponse(List<String> response) {

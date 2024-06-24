@@ -3,7 +3,6 @@ package com.bed.budget.controller;
 import com.bed.budget.dto.*;
 import com.bed.budget.service.BudgetService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.boot.context.config.ConfigTreeConfigDataLocationResolver;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -13,12 +12,12 @@ public class BudgetController {
     private final BudgetService budgetService;
 
     @PostMapping("new-family")
-    public NewFamilyBudgetResponse createFamilyBudget(@RequestBody NewFamilyBudgetRequest request) {
+    public NewUserResponse createFamilyBudget(@RequestBody NewUserRequest request) {
         return budgetService.createFamilyBudget(request);
     }
 
     @GetMapping("get-families")
-    public FamilyBudgetListResponse getFamilies() {
+    public UserListResponse getFamilies() {
         return budgetService.getList();
     }
 
