@@ -15,7 +15,7 @@ public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "user_seq")
     @SequenceGenerator(name = "user_seq", sequenceName = "users_sequence", allocationSize = 1)
-    private int id;
+    private Integer id;
     private String name;
 
     @OneToMany(mappedBy = "user", fetch = FetchType.EAGER)
