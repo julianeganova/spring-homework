@@ -18,7 +18,7 @@ public class Expense {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "budget_seq")
     @SequenceGenerator(name = "budget_seq", sequenceName = "budgets_sequence", allocationSize = 1)
-    private int id;
+    private Integer id;
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "type", referencedColumnName = "id")
     private ExpenseType expenseType;
