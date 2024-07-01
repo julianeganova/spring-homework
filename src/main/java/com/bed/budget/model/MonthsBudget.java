@@ -25,7 +25,7 @@ public class MonthsBudget
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "budget_seq")
     @SequenceGenerator(name = "budget_seq", sequenceName = "budgets_sequence", allocationSize = 1)
-    private int id;
+    private Integer id;
     private int type;
     private Date month;
     @ManyToOne(fetch = FetchType.EAGER)

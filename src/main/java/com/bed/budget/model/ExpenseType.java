@@ -16,7 +16,7 @@ public class ExpenseType {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "exp_type_seq")
     @SequenceGenerator(name = "exp_type_seq", sequenceName = "expense_types_sequence", allocationSize = 1)
-    private int id;
+    private Integer id;
     private String name;
 
     @ManyToOne(fetch = FetchType.EAGER)
